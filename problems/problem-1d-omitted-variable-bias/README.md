@@ -1,4 +1,4 @@
-# Problem 1d - Omitted Variable Bias
+$$ # Problem 1d - Omitted Variable Bias
 
 ## Scientific Overview
 
@@ -75,4 +75,4 @@ This project shows that omitted-variable bias is a structural identification pro
 ## Author
 
 **Dossiya Dakou**  
-MSc Financial Engineering
+MSc Financial Engineering $$
