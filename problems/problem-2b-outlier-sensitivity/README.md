@@ -1,13 +1,10 @@
-# Problem 1d - Omitted Variable Bias
+# Problem 2b - Outlier Sensitivity
 
 ## Files
-- `notebook/` code notebook
-- `html/` exported presentation version
+- `notebook/` analysis notebook
+- `html/` exported HTML version
 - `figures/` plots
 - `results/` saved outputs
 
-## Method
-1. Define the model
-2. Run the analysis
-3. Compare results
-4. Interpret the findings
+## Summary
+This folder contains the outlier and influence analysis, including the notebook, presentation output, and supporting materials.

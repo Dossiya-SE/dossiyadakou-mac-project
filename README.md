@@ -1,13 +1,13 @@
 # MSc Financial Engineering Project
 
 ## Overview
-This repository contains my Financial Engineering project work, including code, written explanations, exported HTML outputs, and reports.
+This repository contains my MSc Financial Engineering project work, organized by problem. Each problem includes the code, exported HTML output, figures, results, and a short explanation.
 
 ## Structure
-- `docs/` general project writing
+- `docs/` general documentation
+- `reports/` written reports
+- `figures/` shared project visuals
 - `problems/` one folder per problem
-- `reports/` report files
-- `figures/` shared images
 
 ## Problems
 - [Problem 1d](problems/problem-1d-omitted-variable-bias/README.md)
@@ -15,3 +15,9 @@ This repository contains my Financial Engineering project work, including code, 
 - [Problem 3a](problems/problem-3a-model-selection/README.md)
 - [Problem 5](problems/problem-5-stationarity-unit-root/README.md)
 - [Problem 6a](problems/problem-6a-structural-break/README.md)
+
+## Reports
+- [Group report](reports/Group_report.docx)
+
+## Author
+Dossiya Dakou
