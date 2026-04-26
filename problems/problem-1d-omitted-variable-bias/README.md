@@ -10,9 +10,9 @@
 
 This project studies **omitted variable bias** as a structural identification problem in linear regression. The objective is to show that misspecification does not merely reduce explanatory power; it changes the statistical object estimated by ordinary least squares.
 
-The notebook simulates a known data-generating process in which an omitted variable is both economically relevant and correlated with the included regressor. The correctly specified model includes both explanatory variables, while the misspecified model excludes one of them. The simulation shows that the omitted-variable model does not converge to the true coefficient as the sample size increases. Instead, it converges toward a biased probability limit.
+The notebook simulates a known data-generating process in which an omitted variable is both structurally relevant and correlated with the included regressor. The correctly specified model includes both explanatory variables, while the misspecified model excludes one of them. The simulation shows that the omitted-variable model does not converge to the true coefficient as the sample size increases. Instead, it converges toward a biased probability limit.
 
-The central conclusion is:
+The central result is:
 
 > Larger datasets reduce sampling noise, but they do not correct structural misspecification.  
 > A misspecified model can become more precise while remaining wrong.
@@ -25,7 +25,7 @@ Regression coefficients are meaningful only when the estimated specification is 
 
 Omitted variable bias occurs when a relevant explanatory variable is excluded from the model and that excluded variable is correlated with an included regressor.
 
-In this setting, the coefficient on the included regressor does not isolate the direct effect of that regressor. Instead, it absorbs part of the influence of the missing variable. This is not primarily a small-sample problem or a prediction problem. It is an identification problem.
+In that setting, the coefficient on the included regressor does not isolate the direct effect of that regressor. Instead, it absorbs part of the influence of the missing variable. This is not mainly a small-sample problem or a prediction problem. It is an **identification problem**.
 
 ---
 
@@ -33,9 +33,7 @@ In this setting, the coefficient on the included regressor does not isolate the 
 
 The notebook simulates the structural model
 
-$$
-Y_i = a + bX_i + cZ_i + e_i.
-$$
+$$Y_i = a + bX_i + cZ_i + e_i.$$
 
 where:
 
@@ -49,79 +47,57 @@ where:
 | $b$ | True coefficient on $X_i$ |
 | $c$ | True coefficient on $Z_i$ |
 
-The parameter values are:
+The simulation parameters are:
 
-$$
-a = 1, \qquad b = 1, \qquad c = 1.
-$$
+$$a = 1,\quad b = 1,\quad c = 1.$$
 
-Therefore, the true coefficient on $X_i$ is
+Therefore, the true coefficient on $X_i$ is:
 
-$$
-b = 1.
-$$
+$$b = 1.$$
 
 The omitted variable $Z_i$ is constructed to be correlated with $X_i$:
 
-$$
-Z_i = \rho X_i + \sqrt{1-\rho^2}\,u_i,
-$$
+$$Z_i = \rho X_i + \sqrt{1-\rho^2}u_i.$$
 
-with
+The correlation parameter is:
 
-$$
-\rho = 0.6.
-$$
+$$\rho = 0.6.$$
 
-The simulation uses
+The random variables are generated as:
 
-$$
-X_i \sim N(0,1), \qquad u_i \sim N(0,1), \qquad e_i \sim N(0,1).
-$$
+$$X_i \sim N(0,1),\quad u_i \sim N(0,1),\quad e_i \sim N(0,1).$$
 
 ---
 
 ## 3. Correct and Misspecified Models
 
-The correctly specified model is
+The correctly specified model is:
 
-$$
-Y_i = \alpha + \beta X_i + \gamma Z_i + \varepsilon_i.
-$$
+$$Y_i = \alpha + \beta X_i + \gamma Z_i + \varepsilon_i.$$
 
 This model includes the relevant explanatory variable $Z_i$, so the coefficient on $X_i$ can recover the true structural effect under the simulation design.
 
 The misspecified model omits $Z_i$:
 
-$$
-Y_i = \alpha + \beta X_i + v_i.
-$$
+$$Y_i = \alpha + \beta X_i + v_i.$$
 
 Substituting the true model into the omitted-variable specification gives the composite error term:
 
-$$
-v_i = cZ_i + e_i.
-$$
+$$v_i = cZ_i + e_i.$$
 
 Because $Z_i$ is correlated with $X_i$, the omitted variable enters the error term and makes the disturbance correlated with the included regressor.
 
-Formally, if
+If
 
-$$
-c \neq 0
-$$
+$$c \neq 0$$
 
 and
 
-$$
-\mathrm{Cov}(X_i,Z_i) \neq 0,
-$$
+$$\mathrm{Cov}(X_i,Z_i) \neq 0,$$
 
 then
 
-$$
-\mathrm{Cov}(X_i,v_i) \neq 0.
-$$
+$$\mathrm{Cov}(X_i,v_i) \neq 0.$$
 
 The omitted-variable model therefore violates the exogeneity condition required for unbiased and consistent OLS estimation.
 
@@ -133,129 +109,71 @@ The full-model coefficient on $X_i$ estimates the partial effect of $X_i$ on $Y_
 
 The omitted-variable coefficient estimates a different object. It captures the direct effect of $X_i$ plus the component of $Z_i$ that is statistically associated with $X_i$.
 
-The omitted-variable probability limit is
+The omitted-variable probability limit is:
 
-$$
-\mathrm{plim}\,\hat{\beta}_{omit}
-=
-b
-+
-c\frac{\mathrm{Cov}(X_i,Z_i)}{\mathrm{Var}(X_i)}.
-$$
+$$\mathrm{plim}\,\hat{\beta}_{omit} = b + c\frac{\mathrm{Cov}(X_i,Z_i)}{\mathrm{Var}(X_i)}.$$
 
-In this simulation,
+In this simulation:
 
-$$
-\mathrm{Var}(X_i) = 1
-$$
+$$\mathrm{Var}(X_i) = 1.$$
 
 and
 
-$$
-\mathrm{Cov}(X_i,Z_i) = \rho.
-$$
+$$\mathrm{Cov}(X_i,Z_i) = \rho.$$
 
-Therefore,
+Therefore:
 
-$$
-\mathrm{plim}\,\hat{\beta}_{omit}
-=
-b + c\rho.
-$$
+$$\mathrm{plim}\,\hat{\beta}_{omit} = b + c\rho.$$
 
-Using the notebook parameters,
+Using the notebook parameters:
 
-$$
-b = 1, \qquad c = 1, \qquad \rho = 0.6,
-$$
+$$b = 1,\quad c = 1,\quad \rho = 0.6.$$
 
-so
+So:
 
-$$
-\mathrm{plim}\,\hat{\beta}_{omit}
-=
-1 + 1(0.6)
-=
-1.6.
-$$
+$$\mathrm{plim}\,\hat{\beta}_{omit} = 1 + 1(0.6) = 1.6.$$
 
-Thus, the omitted-variable model is expected to converge toward $1.6$, not toward the true coefficient $1.0$.
+The omitted-variable model is expected to converge toward $1.6$, not toward the true coefficient $1.0$.
 
 ---
 
 ## 5. Matrix Representation
 
-Let the true model be written as
+Let the true model be written as:
 
-$$
-y = Xb + Zc + e.
-$$
+$$y = Xb + Zc + e.$$
 
-If the researcher estimates the restricted model
+If the researcher estimates the restricted model:
 
-$$
-y = X\beta + v,
-$$
+$$y = X\beta + v,$$
 
-then the OLS estimator is
+then the OLS estimator is:
 
-$$
-\hat{\beta}
-=
-(X^T X)^{-1}X^T y.
-$$
+$$\hat{\beta} = (X^T X)^{-1}X^T y.$$
 
-Substituting the true model gives
+Substituting the true model gives:
 
-$$
-\hat{\beta}
-=
-(X^T X)^{-1}X^T(Xb + Zc + e).
-$$
+$$\hat{\beta} = (X^T X)^{-1}X^T(Xb + Zc + e).$$
 
-Expanding,
+Expanding:
 
-$$
-\hat{\beta}
-=
-b
-+
-(X^T X)^{-1}X^T Zc
-+
-(X^T X)^{-1}X^T e.
-$$
+$$\hat{\beta} = b + (X^T X)^{-1}X^TZc + (X^T X)^{-1}X^Te.$$
 
-Taking probability limits,
+Taking probability limits:
 
-$$
-\mathrm{plim}\,\hat{\beta}
-=
-b
-+
-Q_{XX}^{-1}Q_{XZ}c.
-$$
+$$\mathrm{plim}\,\hat{\beta} = b + Q_{XX}^{-1}Q_{XZ}c.$$
 
-where
+where:
 
-$$
-Q_{XX}
-=
-\mathrm{plim}\left(\frac{X^T X}{n}\right)
-$$
+$$Q_{XX} = \mathrm{plim}\left(\frac{X^T X}{n}\right).$$
 
 and
 
-$$
-Q_{XZ}
-=
-\mathrm{plim}\left(\frac{X^T Z}{n}\right).
-$$
+$$Q_{XZ} = \mathrm{plim}\left(\frac{X^T Z}{n}\right).$$
 
-The omitted-variable bias disappears only if
+The omitted-variable bias disappears only if:
 
-$$
-Q_{XZ}c = 0.
-$$
+$$Q_{XZ}c = 0.$$
 
 This requires either:
 
@@ -295,7 +213,7 @@ The simulation compares:
 | Full model | $Y \sim X + Z$ | Converges toward the true coefficient $b = 1$ |
 | Omitted model | $Y \sim X$ | Converges toward the biased value $1.6$ |
 
-The experiment is designed to separate **sampling variation** from **structural misspecification**.
+The experiment separates **sampling variation** from **structural misspecification**.
 
 ---
 
@@ -353,7 +271,6 @@ def run_simulation(n, seed, a, b, c, rho):
     e = rng.normal(0, 1, n)
 
     Z = rho * X + np.sqrt(1 - rho**2) * u
-
     Y = a + b * X + c * Z + e
 
     df = pd.DataFrame(
@@ -375,7 +292,7 @@ def run_simulation(n, seed, a, b, c, rho):
 
 ---
 
-## 10. R Validation Sketch
+## 10. R Validation
 
 ```r
 simulate_ovb <- function(n, seed = 42) {
@@ -413,7 +330,7 @@ summary(omit_large)
 
 ---
 
-## 11. Julia Numerical Modeling Sketch
+## 11. Julia Numerical Modeling
 
 ```julia
 using Random
@@ -512,15 +429,11 @@ The notebook produces the following coefficient estimates:
 
 The finite-sample correlation between $X$ and $Z$ at $n = 200$ is approximately:
 
-$$
-\mathrm{Corr}(X,Z) = 0.5017.
-$$
+$$\mathrm{Corr}(X,Z) = 0.5017.$$
 
 At the larger sample size, the correlation moves closer to the theoretical design value:
 
-$$
-\rho = 0.6.
-$$
+$$\rho = 0.6.$$
 
 These results confirm the theoretical prediction. The correctly specified model converges toward the true coefficient $1.0$, while the omitted-variable model converges toward the biased coefficient $1.6$.
 
@@ -528,21 +441,13 @@ These results confirm the theoretical prediction. The correctly specified model 
 
 ## 15. Statistical Interpretation
 
-For the correctly specified model,
+For the correctly specified model:
 
-$$
-\hat{\beta}_{full} \to 1.0
-$$
+$$\hat{\beta}_{full} \to 1.0.$$
 
-in probability.
+For the omitted-variable model:
 
-For the omitted-variable model,
-
-$$
-\hat{\beta}_{omit} \to 1.6
-$$
-
-in probability.
+$$\hat{\beta}_{omit} \to 1.6.$$
 
 The omitted-variable estimator is therefore not failing because the sample is too small. It is failing because it targets the wrong estimand.
 
@@ -628,8 +533,11 @@ In mathematical engineering terms, the model is not merely noisy. It is structur
 ```text
 problem-1d-omitted-variable-bias/
 ├── README.md
-├── Problem_1d_omitted_variable_bias.ipynb
-├── Problem_1d_omitted_variable_bias_professional_math.ipynb
+├── notebook/
+│   ├── Problem_1d_omitted_variable_bias.ipynb
+│   └── Problem_1d_omitted_variable_bias_professional_math.ipynb
+├── html/
+│   └── Problem_1d_omitted_variable_bias_professional_math.html
 ├── figures/
 │   └── coefficient_convergence.png
 └── results/
