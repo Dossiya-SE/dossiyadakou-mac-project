@@ -47,7 +47,7 @@ This is an identification problem, not merely a prediction problem.
 Assume the true structural model is
 
 $$
-Y_i = \beta_0 + \beta_1 X_i + \beta_2 W_i + \delta Z_i + \varepsilon_i,
+Y_i = \beta_0 + \beta_1 X_i + \beta_2 W_i + \delta Z_i + \varepsilon_i.
 $$
 
 where:
@@ -91,42 +91,42 @@ The omitted variable is now part of the error term.
 If
 
 $$
-\operatorname{Cov}(X_i, Z_i) \neq 0,
+\mathrm{Cov}(X_i, Z_i) \neq 0,
 $$
 
 then
 
 $$
-\operatorname{Cov}(X_i, u_i) \neq 0,
+\mathrm{Cov}(X_i, u_i) \neq 0,
 $$
 
 because
 
 $$
-\operatorname{Cov}(X_i, u_i)
+\mathrm{Cov}(X_i, u_i)
 =
-\operatorname{Cov}(X_i, \delta Z_i + \varepsilon_i)
+\mathrm{Cov}(X_i, \delta Z_i + \varepsilon_i)
 =
-\delta \operatorname{Cov}(X_i, Z_i)
+\delta \mathrm{Cov}(X_i, Z_i)
 +
-\operatorname{Cov}(X_i, \varepsilon_i).
+\mathrm{Cov}(X_i, \varepsilon_i).
 $$
 
 Assuming the structural error is exogenous,
 
 $$
-\operatorname{Cov}(X_i, \varepsilon_i) = 0,
+\mathrm{Cov}(X_i, \varepsilon_i) = 0,
 $$
 
 so the endogeneity arises from
 
 $$
-\operatorname{Cov}(X_i, u_i)
+\mathrm{Cov}(X_i, u_i)
 =
-\delta \operatorname{Cov}(X_i, Z_i).
+\delta \mathrm{Cov}(X_i, Z_i).
 $$
 
-Therefore, when both conditions hold:
+Therefore, when both conditions hold,
 
 $$
 \delta \neq 0
@@ -135,7 +135,7 @@ $$
 and
 
 $$
-\operatorname{Cov}(X_i, Z_i) \neq 0,
+\mathrm{Cov}(X_i, Z_i) \neq 0,
 $$
 
 the restricted model violates the OLS exogeneity condition.
@@ -151,11 +151,11 @@ The restricted-model coefficient $\alpha_1$ estimates a different object. It cap
 Conceptually,
 
 $$
-\operatorname{plim}\hat{\alpha}_1
+\mathrm{plim}\,\hat{\alpha}_1
 =
 \beta_1
 +
-\text{Omitted Variable Bias}.
+\mathrm{Bias}.
 $$
 
 The bias term depends on two forces:
@@ -166,21 +166,21 @@ The bias term depends on two forces:
 In the simple one-regressor case, the omitted variable bias formula is
 
 $$
-\operatorname{plim}\hat{\alpha}_1
+\mathrm{plim}\,\hat{\alpha}_1
 =
 \beta_1
 +
 \delta
-\frac{\operatorname{Cov}(X_i, Z_i)}{\operatorname{Var}(X_i)}.
+\frac{\mathrm{Cov}(X_i, Z_i)}{\mathrm{Var}(X_i)}.
 $$
 
 Therefore,
 
 $$
-\text{Bias}
+\mathrm{Bias}
 =
 \delta
-\frac{\operatorname{Cov}(X_i, Z_i)}{\operatorname{Var}(X_i)}.
+\frac{\mathrm{Cov}(X_i, Z_i)}{\mathrm{Var}(X_i)}.
 $$
 
 This expression shows that the direction and magnitude of the bias are determined jointly by the omitted variable's effect and its covariance with the included regressor.
@@ -206,33 +206,33 @@ The OLS estimator in the restricted model is
 $$
 \hat{\alpha}
 =
-(X'X)^{-1}X'y.
+(X^{\top}X)^{-1}X^{\top}y.
 $$
 
-Substituting the true model:
+Substituting the true model gives
 
 $$
 \hat{\alpha}
 =
-(X'X)^{-1}X'(X\beta + Z\delta + \varepsilon).
+(X^{\top}X)^{-1}X^{\top}(X\beta + Z\delta + \varepsilon).
 $$
 
-Expanding:
+Expanding,
 
 $$
 \hat{\alpha}
 =
 \beta
 +
-(X'X)^{-1}X'Z\delta
+(X^{\top}X)^{-1}X^{\top}Z\delta
 +
-(X'X)^{-1}X'\varepsilon.
+(X^{\top}X)^{-1}X^{\top}\varepsilon.
 $$
 
-Taking probability limits:
+Taking probability limits,
 
 $$
-\operatorname{plim}\hat{\alpha}
+\mathrm{plim}\,\hat{\alpha}
 =
 \beta
 +
@@ -242,13 +242,17 @@ $$
 where
 
 $$
-Q_{XX} = \operatorname{plim}\left(\frac{X'X}{n}\right)
+Q_{XX}
+=
+\mathrm{plim}\left(\frac{X^{\top}X}{n}\right)
 $$
 
 and
 
 $$
-Q_{XZ} = \operatorname{plim}\left(\frac{X'Z}{n}\right).
+Q_{XZ}
+=
+\mathrm{plim}\left(\frac{X^{\top}Z}{n}\right).
 $$
 
 Thus, omitted variable bias disappears only when
@@ -273,11 +277,7 @@ flowchart LR
     Z[Omitted Variable Z] --> Y[Outcome Y]
     X[Included Regressor X] --> Y
     W[Control Variable W] --> Y
-    Z -. correlated with .- X
-
-    style Z fill:#ffe6e6,stroke:#cc0000,stroke-width:2px
-    style X fill:#e6f0ff,stroke:#0052cc,stroke-width:2px
-    style Y fill:#e6ffe6,stroke:#008000,stroke-width:2px
+    Z -. correlated with .-> X
 ```
 
 The omitted variable $Z$ affects the outcome $Y$ and is correlated with the included regressor $X$. Because $Z$ is not included in the estimated model, its effect enters the disturbance term. This creates endogeneity and contaminates the estimated coefficient on $X$.
@@ -300,7 +300,7 @@ $$
 The theoretical probability limit of the omitted-variable estimator is
 
 $$
-\operatorname{plim}\hat{\alpha}_1 = 1.6.
+\mathrm{plim}\,\hat{\alpha}_1 = 1.6.
 $$
 
 The experiment compares:
@@ -507,11 +507,7 @@ The correctly specified model converges toward the true structural coefficient. 
 
 This demonstrates the key statistical distinction:
 
-$$
-\text{Consistency under correct specification}
-\neq
-\text{Precision under misspecification}.
-$$
+> Consistency under correct specification is not the same as precision under misspecification.
 
 ---
 
@@ -522,13 +518,13 @@ The simulation provides a clean demonstration of consistency.
 For the correctly specified model,
 
 $$
-\hat{\beta}_1 \xrightarrow{p} \beta_1.
+\hat{\beta}_1 \to_p \beta_1.
 $$
 
 For the omitted-variable model,
 
 $$
-\hat{\alpha}_1 \xrightarrow{p} \beta_1 + \text{Bias}.
+\hat{\alpha}_1 \to_p \beta_1 + \mathrm{Bias}.
 $$
 
 Therefore, the restricted estimator is not inconsistent because the sample is too small. It is inconsistent because the model targets the wrong probability limit.
@@ -631,21 +627,7 @@ problem-1d/
 
 ---
 
-## 19. Quality-Control Checklist
-
-- [x] Define the true data-generating process  
-- [x] Define the restricted misspecified model  
-- [x] Derive the composite error term  
-- [x] Show the violation of exogeneity  
-- [x] Derive the omitted-variable-bias mechanism  
-- [x] Compare full and restricted models  
-- [x] Simulate finite-sample and large-sample behavior  
-- [x] Interpret results statistically  
-- [x] Connect results to financial engineering model risk  
-
----
-
-## 20. Main Conclusion
+## 19. Main Conclusion
 
 This project shows that omitted variable bias is a structural identification failure.
 
@@ -664,4 +646,4 @@ This principle is fundamental in financial engineering, where model specificatio
 
 **Dossiya Dakou**  
 MSc Financial Engineering — WorldQuant University  
-Master of Science in Engineering, Sustainable Engineering — Arizona State University  
+Master of Science in Engineering, Sustainable Engineering — Arizona State University
