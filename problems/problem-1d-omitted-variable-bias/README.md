@@ -1,78 +1,140 @@
-$$ # Problem 1d - Omitted Variable Bias
+# Problem 1d — Omitted Variable Bias
 
-## Scientific Overview
+## Overview
 
-This project studies omitted-variable bias as an identification failure in linear regression. The econometric issue is not merely that the model is incomplete, but that exclusion of a relevant regressor changes the stochastic structure of the disturbance term. If the omitted variable is correlated with included regressors, the composite error becomes endogenous, violating the zero-conditional-mean assumption required for unbiased and consistent ordinary least squares estimation. :contentReference[oaicite:6]{index=6}
+This project studies **omitted variable bias** as an identification problem in linear regression. The issue is not simply that a regression model is incomplete. The deeper problem is that omitting a relevant variable changes the structure of the regression error term.
 
-Formally, if the true model is
+When the omitted variable is correlated with one or more included regressors, the restricted model violates the zero conditional mean assumption required for unbiased and consistent ordinary least squares estimation. In that case, the estimated coefficient no longer recovers the intended structural parameter.
 
-\[
+---
+
+## Econometric Framework
+
+Suppose the true data-generating process is
+
+$$
 Y_i = \beta_0 + \beta_1 X_i + \beta_2 W_i + \delta Z_i + \varepsilon_i,
-\]
+$$
 
-but the estimated model omits \( Z_i \), then the restricted disturbance becomes
+where \(Z_i\) is a relevant explanatory variable.
 
-\[
+If \(Z_i\) is omitted, the estimated restricted model becomes
+
+$$
+Y_i = \alpha_0 + \alpha_1 X_i + \alpha_2 W_i + u_i,
+$$
+
+where the restricted disturbance is
+
+$$
 u_i = \delta Z_i + \varepsilon_i.
-\]
+$$
 
-If \( \operatorname{Cov}(X_i, Z_i) \neq 0 \), then
+The omitted variable is now embedded in the error term. If
 
-\[
-E(u_i \mid X_i, W_i) \neq 0,
-\]
+$$
+\operatorname{Cov}(X_i, Z_i) \neq 0,
+$$
 
-and the slope estimator is biased because the included regressor partially proxies for the missing explanatory channel. This is the core mechanism of omitted-variable bias discussed in the report. :contentReference[oaicite:7]{index=7}
+then the composite error term is correlated with the included regressor, so
 
-## Mathematical Identification Logic
+$$
+E(u_i \mid X_i, W_i) \neq 0.
+$$
 
-The project emphasizes that the restricted-model coefficient does not estimate the same economic object as the full-model coefficient unless an orthogonality condition holds. In the benign special case where the omitted regressor is orthogonal to all included regressors, exclusion may reduce explanatory power but does not induce endogeneity in the restricted disturbance. Outside that case, coefficient interpretation changes fundamentally: the fitted slope conflates the direct effect of the included regressor with the indirect correlation structure induced by the omitted variable. :contentReference[oaicite:8]{index=8}
+This violates the exogeneity condition for OLS. As a result, the restricted-model coefficient on \(X_i\) absorbs part of the missing explanatory channel carried by \(Z_i\).
 
-This can be summarized conceptually by the omitted-variable-bias decomposition:
+---
 
-\[
-\plim \hat{\beta}_{X,\text{omitted}} = \beta_X + \text{Bias term},
-\]
+## Identification Logic
 
-where the bias term depends on both the omitted effect \( \delta \) and the covariance structure between the omitted and included regressors. The report stresses that the sign and magnitude of the distortion are therefore determined jointly by economic relevance and dependence structure, not by sample size alone. :contentReference[oaicite:9]{index=9}
+The coefficient from the restricted model does not generally estimate the same object as the coefficient from the correctly specified model.
 
-## Computational Design and Data-Science Workflow
+The full model coefficient \(\beta_1\) measures the partial effect of \(X_i\) on \(Y_i\), holding both \(W_i\) and \(Z_i\) fixed. By contrast, the restricted-model coefficient reflects the effect of \(X_i\) plus the component of \(Z_i\) that is statistically associated with \(X_i\).
 
-The notebook demonstrates the theory through simulation. The true coefficient on \( X \) is set to 1.0, while the theoretical coefficient recovered by the omitted model is 1.6. The simulation then compares the full specification and the misspecified specification as sample size increases, which is a strong data-science design because it separates sampling variability from structural misspecification. 
+Conceptually,
 
-In the full model, the estimated \( X \)-coefficient moves from 0.925568 at \( n = 200 \) to 1.002342 at \( n = 10{,}000 \), showing convergence to the true parameter. In the omitted model, the estimate moves from 1.481238 to 1.583250, converging toward the biased probability limit rather than the true coefficient. This is the central computational result: increasing data volume reduces variance but cannot correct systematic misspecification. 
+$$
+\operatorname{plim}\hat{\alpha}_1
+=
+\beta_1
++
+\text{Bias term}.
+$$
+
+The bias term depends on two elements:
+
+1. The causal or structural importance of the omitted variable, represented by \(\delta\)
+2. The dependence structure between the omitted variable and the included regressors
+
+Therefore, the direction and size of omitted variable bias are determined jointly by **economic relevance** and **correlation structure**. Increasing the sample size reduces sampling variability, but it does not eliminate structural misspecification.
+
+---
+
+## Computational Design
+
+The notebook demonstrates the theory using a controlled simulation.
+
+The simulation is designed so that:
+
+- The true coefficient on \(X\) is \(1.0\)
+- The theoretical probability limit of the omitted-variable estimator is \(1.6\)
+- The full model includes the relevant regressor
+- The restricted model omits the relevant correlated regressor
+- Sample size is increased to distinguish sampling noise from structural bias
+
+This design makes the identification failure visible. If the estimator is correctly specified, it should converge toward the true coefficient. If the model is misspecified, it should converge toward the biased probability limit.
+
+---
+
+## Simulation Results
+
+| Model | Sample Size | Estimated Coefficient on \(X\) | Target of Convergence |
+|---|---:|---:|---:|
+| Full model | 200 | 0.925568 | True coefficient: 1.000000 |
+| Omitted-variable model | 200 | 1.481238 | Biased probability limit: 1.600000 |
+| Full model | 10,000 | 1.002342 | True coefficient: 1.000000 |
+| Omitted-variable model | 10,000 | 1.583250 | Biased probability limit: 1.600000 |
+
+The full model converges toward the true structural coefficient. The omitted-variable model converges toward the wrong estimand.
+
+This is the key computational result: **more data reduce variance, but they do not correct bias caused by misspecification.**
+
+---
 
 ## Statistical Interpretation
 
-The simulation delivers a clean consistency argument. Under correct specification, the estimator concentrates around the true structural parameter. Under omission of a relevant correlated regressor, the estimator becomes consistent for the wrong estimand. This distinction is fundamental in financial engineering and econometrics because large datasets are common, yet large datasets do not rescue a structurally invalid model. 
+The simulation highlights the difference between precision and validity.
+
+Under correct specification, the OLS estimator concentrates around the true parameter as the sample size increases. Under omitted variable bias, the estimator may also become more stable, but it stabilizes around the wrong value.
+
+This distinction matters in modern empirical work because large datasets can create a false sense of reliability. A coefficient can appear precise, stable, and statistically significant while still being economically invalid if the model omits a relevant correlated driver.
+
+---
 
 ## Financial Engineering Relevance
 
-In financial applications, omitted-variable bias appears whenever a return, risk, spread, or price process is modeled without controlling for a latent but economically relevant driver. Examples include omitted market factors in asset pricing, omitted volatility or liquidity controls in execution models, and omitted macro state variables in forecasting equations. In all such cases, a coefficient that appears statistically stable may still be economically misleading because it is contaminated by missing state information. That is exactly why factor selection, feature justification, and model specification are central financial engineering tasks rather than cosmetic modeling choices. The report’s conclusion directly supports this interpretation: more data sharpen convergence toward the wrong parameter when the model is misspecified. 
+Omitted variable bias is especially important in financial engineering because financial data often contain latent or partially observed state variables.
 
-## Evidence Summary
+Examples include:
 
-The report’s simulation evidence can be summarized as follows:
+- Asset-pricing models that omit relevant risk factors
+- Return models that omit volatility, liquidity, or macroeconomic controls
+- Credit-spread models that omit borrower, market, or business-cycle conditions
+- Execution models that omit market depth or order-flow information
+- Forecasting models that omit regime variables or hidden state dynamics
 
-- True coefficient on \( X \): 1.000000
-- Theoretical omitted-model coefficient on \( X \): 1.600000
-- Estimated full-model coefficient at \( n = 200 \): 0.925568
-- Estimated omitted-model coefficient at \( n = 200 \): 1.481238
-- Estimated full-model coefficient at \( n = 10{,}000 \): 1.002342
-- Estimated omitted-model coefficient at \( n = 10{,}000 \): 1.583250 
+In these settings, a coefficient may look statistically strong but still reflect a contaminated relationship. The model may be estimating a mixture of direct effects and omitted state-variable effects.
 
-## Technical Deliverables in This Folder
+For this reason, factor selection, feature justification, diagnostics, and specification testing are central financial engineering tasks. They are not cosmetic modeling choices.
 
-- `notebook/` contains the simulation and estimation workflow.
-- `html/` contains the polished mathematical presentation.
-- `figures/` stores the convergence visualization.
-- `results/` stores any numerical summaries or exported tables.
+---
 
-## Main Conclusion
+## Technical Deliverables
 
-This project shows that omitted-variable bias is a structural identification problem. The restricted regression is only valid under strict orthogonality conditions. Once a relevant correlated regressor is excluded, the error term becomes endogenous, the slope estimator is biased and inconsistent for the true structural coefficient, and larger samples merely improve precision around the wrong probability limit. 
-
-## Author
-
-**Dossiya Dakou**  
-MSc Financial Engineering $$
+```text
+problem-1d/
+├── notebook/     # Simulation and estimation workflow
+├── html/         # Polished mathematical presentation
+├── figures/      # Convergence visualizations
+└── results/      # Numerical summaries and exported tables
